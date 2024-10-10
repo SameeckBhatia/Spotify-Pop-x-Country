@@ -1,0 +1,79 @@
+---
+title: "A Comparative Analysis of Tempo and Valence in Spotify Pop and Country Songs"
+format: pdf
+date: today
+author:
+  - Sameeck Bhatia
+  - Sean Chua
+  - Cristina Su Lam
+  - Mariko Lee
+  - Karen Riani
+bibliography: references.bib
+---
+
+# Introduction
+
+Canada, particularly Toronto, is recognized as one of the most multicultural regions globally, bringing with it a wide variety of musical influences and preferences [@worldpop]. Among the numerous genres that thrive in this diverse nation, country and pop music are two of the most popular [@bestmusic]. To explore these differences further, this paper analyzes key musical features from two renowned artists: Luke Combs, a leading figure in country music, and Tate McRae, a rising star in pop. Using the `spotifyr` library [@spotifyr], we make use of the Spotify API to gather and compare data on their tracks, providing insight into the unique characteristics of each genre.
+
+# Results
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+library(spotifyr)
+library(tidyverse)
+library(gridExtra)
+```
+
+```{r, echo = FALSE}
+id <- "718COspgdWOnwOFpJHRZHS"
+albums_luke <- get_artist_albums(id)
+tracks_luke <- lapply(albums_luke$id, get_album_tracks)
+luke_combs <- get_artist_audio_features(id)
+```
+
+```{r, echo = FALSE}
+id2 <- "45dkTj5sMRSjrmBSBeiHym"
+albums_tate <- get_artist_albums(id2)
+tracks_tate <- lapply(albums_tate$id, get_album_tracks)
+tate_mcrae <- get_artist_audio_features(id2)
+```
+
+```{r fig-1, echo = FALSE, fig.width=4, fig.height=3}
+p1 <- ggplot(tate_mcrae, aes(x = tempo, y = valence)) +
+  geom_point() +
+  labs(title = "Valence of Tate McRae Songs Over Tempo",
+       x = "Tempo",
+       y = "Valence") +
+  scale_x_continuous(limits = c(60, 180)) +
+  theme_minimal()
+
+p1
+```
+
+
+```{r fig-2, echo = FALSE, fig.width=4, fig.height=3}
+p2 <- ggplot(luke_combs, aes(x = tempo, y = valence)) +
+  geom_point() +
+  labs(title = "Valence of Luke Combs Songs Over Tempo",
+       x = "Tempo",
+       y = "Valence") +
+  scale_x_continuous(limits = c(60, 180)) +
+  theme_minimal()
+
+p2
+```
+
+```{r fig-valence, fig.height=8, fig.width=8, echo = FALSE}
+#grid.arrange(p1, p2, nrow=2, ncol=1)
+```
+
+@fig-1 and @fig-2 compares the valence of a track with its tempo for songs by Tate McRae and Luke Combs, respectively. In the case of Tate McRae's pop songs, we observe that there is little to no correlation between valence and tempo. This suggests that pop listeners may prioritize tempo over emotional content when deciding their preference for a track, supporting findings that tempo plays a larger role in pop music appeal than emotion [@eerola].
+
+Conversely, for Luke Combs' country songs, there appears to be a stronger relationship between valence and tempo. Country music often emphasizes storytelling, and listeners may focus more on the emotional tone (valence) of the song rather than its tempo. As a result, the valence seems to play a more significant role in determining a song's appeal, even across a wide tempo range (from 75 to 170 bpm). For instance, several of Luke Combs' slower songs exhibit valence levels similar to his faster tracks, indicating that emotion, rather than speed, is the key factor in country music appeal.
+
+\newpage
+
+# References
